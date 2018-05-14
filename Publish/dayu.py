@@ -23,7 +23,6 @@ def dayu(title, pic_path, content):
     '''
     driver.get("https://mp.dayu.com/dashboard/article/write")
     if driver.current_url == "https://mp.dayu.com/?redirect_url=%2Fdashboard%2Farticle%2Fwrite":
-        Flag = True   #处理不能直接登录(需要后面的验证)
         driver.get("https://mp.dayu.com/mobile/index")
         time.sleep(5)
         driver.switch_to.frame(driver.find_element_by_xpath("//div[@class='loginPage-mobileLogin_body']//iframe"))
@@ -50,10 +49,9 @@ def dayu(title, pic_path, content):
                 elements_insertCode.send_keys(QRCode)
                 elements_ok = driver.find_element_by_class_name("btn-ok")
                 elements_ok.click()
-                Flag = False
-        if Flag:
-            elements_login = driver.find_element_by_id("submit_btn")
-            elements_login.click()
+                time.sleep(3)
+        elements_login = driver.find_element_by_id("submit_btn")
+        elements_login.click()
         time.sleep(5)
     driver.get("https://mp.dayu.com/dashboard/article/write")
     elements_title = driver.find_element_by_class_name("article-write_box-title-input")
