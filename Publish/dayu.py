@@ -3,6 +3,7 @@ from selenium.webdriver import ActionChains
 from pykeyboard import PyKeyboard
 import time
 import os
+import json
 
 # 进入浏览器设置
 options = webdriver.ChromeOptions()
@@ -13,7 +14,7 @@ options.add_argument('lang=zh_CN.UTF-8')
 options.add_argument('user-agent: "Mozilla/5.0 (Android 6.0.1; Mo…43.0) Gecko/43.0 Firefox/43.0"')
 driver = webdriver.Chrome(chrome_options=options)
 #driver = webdriver.Firefox()
-driver.maximize_window()
+driver.set_window_size(1280, 800)
 
 key = PyKeyboard()
 
@@ -22,7 +23,23 @@ def dayu(title, pic_path, content):
     进入文章发表页->填写文章标题->插入图片->添加本地图片->确认添加(自动关闭图片添加的窗口回到正文)->(暂时不填入图片描述)填写文章正文(此时已自动生成封面)->保存
     '''
     driver.get("https://mp.dayu.com/dashboard/article/write")
+
+    #COOKIE登录
+    driver.delete_all_cookies()
+    if os.path.exists('dayucookie.json'):
+        with open('dayucookie.json', 'r', encoding='utf-8') as f:
+            for cookie in json.loads(f.read()):
+                driver.add_cookie({
+                    'domain': 'mp.dayu.com',
+                    'name': cookie['name'],
+                    'value': cookie['value'],
+                    'path': '/',
+                    'expires': None
+                })
+            driver.get("https://mp.dayu.com/dashboard/article/write")
+
     if driver.current_url == "https://mp.dayu.com/?redirect_url=%2Fdashboard%2Farticle%2Fwrite":
+        Flag = True
         driver.get("https://mp.dayu.com/mobile/index")
         time.sleep(5)
         driver.switch_to.frame(driver.find_element_by_xpath("//div[@class='loginPage-mobileLogin_body']//iframe"))
@@ -50,28 +67,54 @@ def dayu(title, pic_path, content):
                 elements_ok = driver.find_element_by_class_name("btn-ok")
                 elements_ok.click()
                 time.sleep(3)
-        elements_login = driver.find_element_by_id("submit_btn")
-        elements_login.click()
-        time.sleep(5)
+                #判断验证码是否正确(不正确的话暂时手动输入)
+                while True:
+                    elements_login = driver.find_element_by_id("submit_btn")
+                    try:
+                        elements_login.click()
+                        Flag = False
+                        break
+                    except:
+                        elements_insertCode.send_keys(input("输入验证码："))
+                        elements_ok.click()
+                        time.sleep(3) 
+                time.sleep(2)
+        if Flag:               
+            elements_login = driver.find_element_by_id("submit_btn")
+            elements_login.click()
+            time.sleep(5)
+        with open('dayucookie.json', 'w') as f:
+            f.write(json.dumps(driver.get_cookies()))
     driver.get("https://mp.dayu.com/dashboard/article/write")
     elements_title = driver.find_element_by_class_name("article-write_box-title-input")
     elements_title.send_keys(title)
     #插入图片
     elements_insert_pic = driver.find_element_by_id("edui14_body")
     elements_insert_pic.click()
-    elements_select_pic = driver.find_element_by_xpath("//div[@class='webuploader-container']/button")
-    elements_select_pic.click()
+    elements_select_pic = driver.find_element_by_class_name("webuploader-element-invisible")
+    # elements_select_pic.click() #此处的dom无法点击，换用action点击
+    ActionChains(driver).move_to_element(elements_select_pic).click(elements_select_pic).perform()
+    time.sleep(2)
     key.type_string(pic_path)
-    key.enter_key()
+    key.tap_key(key.enter_key)
+    key.tap_key(key.enter_key)
+    time.sleep(2)
+    elements_confirm_addPic = driver.find_element_by_xpath("//div[@class='article-material-image-dialog_root']//button[2]")
     #等待上传完毕
-    elements_confirm_addPic = driver.find_element_by_xpath("//div[@class='article-material-image-dialog_root']/button[2]")
+    time.sleep(5)
     elements_confirm_addPic.click()
+    time.sleep(2)
+    #driver.switch_to_window(driver.window_handles[0])
     #填写正文，此时图片已插入frame
-    driver.switch_to.frame("ueditor_0")
-    elements_content = driver.find_element_by_xpath("/body[@class='view simple-ui']/p[3]")
-    elements_content.send_keys(content)
+    # driver.switch_to.frame("ueditor_0")
+    # elements_content = driver.find_element_by_xpath("//body[@class='view']//p[@class='empty']") 
+    # elements_content.send_keys(content)
+    driver.switch_to.active_element.send_keys(content)
     driver.switch_to.default_content()
-    elements_publish = driver.find_element_by_xpath("//div[@class='article-write_box-opt_msgNum']/button[4]")
+    elements_publish = driver.find_element_by_xpath("//div[@class='w-btn-toolbar']/button[4]")
+    #辅助封面自动生成(利用js指令将页面下拉到底部)
+    driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")   
+    time.sleep(5)
     elements_publish.click()
 
 '''
@@ -105,19 +148,19 @@ class OcrUtil(object):
         return urllib.request.urlopen(url).read()
 
     def get_image_verfy_code(self, url):
-        aipOcr = AipOcr(APP_ID, API_KEY, SECRET_KEY)
-        result = aipOcr.basicGeneral(self.open_url_content(url))
         try:
+            aipOcr = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+            result = aipOcr.basicGeneral(self.open_url_content(url))
             verification_code = result.get('words_result')[0]['words']
             return verification_code
         except:
-            return None
+            return "0000"
 
 
 
 
 
 title = "NASA plans to send mini-helicopter to Mars"
-pic_path = "file:///"+os.getcwd()+"/test.jpeg"
+pic_path = os.getcwd()+"\\test.jpeg"
 content = "It is part of the US space agency 2020 mission to place a next-generation rover on the Martian surface and will mark the first time such an aircraft will be used on another planet.Known as the Mars Helicopter, the remote-controlled device weighs less than four pounds (1.8kg) and its blades spin at almost 3,000rpm, roughly 10 times the rate employed by helicopters on Earth.NASA officials said the aircraft will reach the Red Planet's surface attached to the Mars 2020 rover that aims to carry out geological studies and ascertain the habitability of the Martian environment.NASA has a proud history of firsts, said NASA administrator Jim Bridenstine.The idea of a helicopter flying the skies of another planet is thrilling."
 dayu(title, pic_path, content)
