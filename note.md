@@ -30,3 +30,16 @@
 # 秒拍
 视频发布
     url = http://creator.miaopai.com/upload
+
+
+
+
+
+
+
+
+
+
+# 素材来源
+- https://www3.nhk.or.jp/nhkworld/en/news/list/
+- https://www.huffingtonpost.com/section/huffpost-home
