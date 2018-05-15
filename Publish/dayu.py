@@ -5,7 +5,8 @@ import time
 import os
 import json
 
-# 进入浏览器设置
+#===========================Chrome=================
+#进入浏览器设置
 options = webdriver.ChromeOptions()
 # 设置中文
 options.add_argument('lang=zh_CN.UTF-8')
@@ -14,11 +15,13 @@ options.add_argument('lang=zh_CN.UTF-8')
 options.add_argument('user-agent: "Mozilla/5.0 (Android 6.0.1; Mo…43.0) Gecko/43.0 Firefox/43.0"')
 driver = webdriver.Chrome(chrome_options=options)
 #driver = webdriver.Firefox()
-driver.set_window_size(1280, 800)
+driver.set_window_size(600, 800)
+
 
 key = PyKeyboard()
 
-def dayu(title, pic_path, content):
+def run(*args):
+    article_id, title, content = args
     '''发布流程
     进入文章发表页->填写文章标题->插入图片->添加本地图片->确认添加(自动关闭图片添加的窗口回到正文)->(暂时不填入图片描述)填写文章正文(此时已自动生成封面)->保存
     '''
@@ -26,8 +29,8 @@ def dayu(title, pic_path, content):
 
     #COOKIE登录
     driver.delete_all_cookies()
-    if os.path.exists('dayucookie.json'):
-        with open('dayucookie.json', 'r', encoding='utf-8') as f:
+    if os.path.exists(os.getcwd()+'\\utils\\dayucookie.json'):
+        with open(os.getcwd()+'\\utils\\dayucookie.json', 'r', encoding='utf-8') as f:
             for cookie in json.loads(f.read()):
                 driver.add_cookie({
                     'domain': 'mp.dayu.com',
@@ -83,7 +86,7 @@ def dayu(title, pic_path, content):
             elements_login = driver.find_element_by_id("submit_btn")
             elements_login.click()
             time.sleep(5)
-        with open('dayucookie.json', 'w') as f:
+        with open(os.getcwd()+'\\utils\\dayucookie.json', 'w') as f:
             f.write(json.dumps(driver.get_cookies()))
     driver.get("https://mp.dayu.com/dashboard/article/write")
     elements_title = driver.find_element_by_class_name("article-write_box-title-input")
@@ -95,6 +98,10 @@ def dayu(title, pic_path, content):
     # elements_select_pic.click() #此处的dom无法点击，换用action点击
     ActionChains(driver).move_to_element(elements_select_pic).click(elements_select_pic).perform()
     time.sleep(2)
+    #获取本地封面的路径
+    pic_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'\\cover\\'+str(article_id)+'.png'
+    #TODO:这里有bug,中文下会输入英文。英文下会输入中文
+    key.tap_key(key.shift_key)
     key.type_string(pic_path)
     key.tap_key(key.enter_key)
     key.tap_key(key.enter_key)
@@ -113,8 +120,9 @@ def dayu(title, pic_path, content):
     driver.switch_to.default_content()
     elements_publish = driver.find_element_by_xpath("//div[@class='w-btn-toolbar']/button[4]")
     #辅助封面自动生成(利用js指令将页面下拉到底部)
-    driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")   
-    time.sleep(5)
+    driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+    #文本太长的情况下需要时间   
+    time.sleep(120)
     elements_publish.click()
 
 '''
@@ -157,10 +165,6 @@ class OcrUtil(object):
             return "0000"
 
 
-
-
-
-title = "NASA plans to send mini-helicopter to Mars"
-pic_path = os.getcwd()+"\\test.jpeg"
-content = "It is part of the US space agency 2020 mission to place a next-generation rover on the Martian surface and will mark the first time such an aircraft will be used on another planet.Known as the Mars Helicopter, the remote-controlled device weighs less than four pounds (1.8kg) and its blades spin at almost 3,000rpm, roughly 10 times the rate employed by helicopters on Earth.NASA officials said the aircraft will reach the Red Planet's surface attached to the Mars 2020 rover that aims to carry out geological studies and ascertain the habitability of the Martian environment.NASA has a proud history of firsts, said NASA administrator Jim Bridenstine.The idea of a helicopter flying the skies of another planet is thrilling."
-dayu(title, pic_path, content)
+if __name__ == "__main__":
+    run()
+    
