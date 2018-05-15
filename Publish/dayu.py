@@ -15,7 +15,7 @@ options.add_argument('lang=zh_CN.UTF-8')
 options.add_argument('user-agent: "Mozilla/5.0 (Android 6.0.1; Mo…43.0) Gecko/43.0 Firefox/43.0"')
 driver = webdriver.Chrome(chrome_options=options)
 #driver = webdriver.Firefox()
-driver.set_window_size(600, 800)
+driver.maximize_window()
 
 
 key = PyKeyboard()

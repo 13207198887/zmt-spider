@@ -41,5 +41,14 @@
 
 
 # 素材来源
+- https://www.msn.com/en-us/news/technology
+- https://www.mirror.co.uk/tech/
 - https://www3.nhk.or.jp/nhkworld/en/news/list/
 - https://www.huffingtonpost.com/section/huffpost-home
+- https://www.theverge.com/tech
+- [ok] https://www.reuters.com/news/archive/technologyNews    [!]
+- https://www.techradar.com/news        [!]
+- https://www.bloomberg.com/technology   [!]
+
+# 视频
+- http://www.bbc.com/news/technology
