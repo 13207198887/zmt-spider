@@ -13,9 +13,11 @@ options.add_argument('lang=zh_CN.UTF-8')
 # 更换头部
 '''登陆时将请求头设置成手机代理防止被检测出来,登录请求的URL也用手机web版登录然后跳转回正常页面'''
 options.add_argument('user-agent: "Mozilla/5.0 (Android 6.0.1; Mo…43.0) Gecko/43.0 Firefox/43.0"')
+#不显示前台界面
+#options.add_argument('headless')
 driver = webdriver.Chrome(chrome_options=options)
 #driver = webdriver.Firefox()
-driver.set_window_size(600, 800)
+driver.maximize_window()
 
 
 key = PyKeyboard()
@@ -124,6 +126,8 @@ def run(*args):
     #文本太长的情况下需要时间   
     time.sleep(120)
     elements_publish.click()
+    time.sleep(240)
+    driver.close()
 
 '''
 辅助方法
