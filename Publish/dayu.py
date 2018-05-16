@@ -5,25 +5,11 @@ import time
 import os
 import json
 
-#===========================Chrome=================
-#进入浏览器设置
-options = webdriver.ChromeOptions()
-# 设置中文
-options.add_argument('lang=zh_CN.UTF-8')
-# 更换头部
-'''登陆时将请求头设置成手机代理防止被检测出来,登录请求的URL也用手机web版登录然后跳转回正常页面'''
-options.add_argument('user-agent: "Mozilla/5.0 (Android 6.0.1; Mo…43.0) Gecko/43.0 Firefox/43.0"')
-#不显示前台界面
-#options.add_argument('headless')
-driver = webdriver.Chrome(chrome_options=options)
-#driver = webdriver.Firefox()
-driver.maximize_window()
-
 
 key = PyKeyboard()
 
 def run(*args):
-    article_id, title, content = args
+    driver, article_id, title, content = args
     '''发布流程
     进入文章发表页->填写文章标题->插入图片->添加本地图片->确认添加(自动关闭图片添加的窗口回到正文)->(暂时不填入图片描述)填写文章正文(此时已自动生成封面)->保存
     '''
@@ -51,10 +37,10 @@ def run(*args):
         elements_usr = driver.find_element_by_id("login_name")
         elements_usr.send_keys("18523152354")
         elements_pwd = driver.find_element_by_id("password")
-        elements_pwd.send_keys("")
+        elements_pwd.send_keys("Spz19950127")
         # elements_slideBtn = driver.find_element_by_class_name("btn_slide") #PC下的定位
         #判断是否需要滑块验证
-        if is_element_exist(".slider"):
+        if is_element_exist(driver, ".slider"):
             elements_slideBtn = driver.find_element_by_xpath("//div[@class='slider']//div[@class='button']") 
             action = ActionChains(driver)
             action.click_and_hold(elements_slideBtn).perform()
@@ -62,7 +48,7 @@ def run(*args):
             action.move_by_offset(1322, 0).perform()
             time.sleep(5)
             #判断是否需要输入验证码
-            if is_element_exist(".icon-warn"):
+            if is_element_exist(driver, ".icon-warn"):
                 QRCode_Url = driver.find_element_by_xpath("//div[@class='textbox']//img").get_attribute('src')
                 ocr = OcrUtil()
                 #TODO:处理百度识别出错的情况
@@ -124,15 +110,19 @@ def run(*args):
     #辅助封面自动生成(利用js指令将页面下拉到底部)
     driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
     #文本太长的情况下需要时间   
-    time.sleep(120)
+    time.sleep(70)
     elements_publish.click()
-    time.sleep(240)
-    driver.close()
+    time.sleep(10)
+    #处理弹框
+    try:
+        key.tap_key(key.enter_key)
+    except:
+        pass
 
 '''
 辅助方法
 '''
-def is_element_exist(css):
+def is_element_exist(driver, css):
     '''判断元素是否存在'''
     s = driver.find_elements_by_css_selector(css_selector=css)
     if len(s) == 0:

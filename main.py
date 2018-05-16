@@ -1,17 +1,39 @@
 from Publish import dayu
 from utils.Crawl_article import spider_tc, spider_reuters
 
+from selenium import webdriver
+
+
+def init_driver():
+    '''初始化浏览器'''
+    #===========================Chrome=================
+    #进入浏览器设置
+    options = webdriver.ChromeOptions()
+    # 设置中文
+    options.add_argument('lang=zh_CN.UTF-8')
+    # 更换头部
+    '''登陆时将请求头设置成手机代理防止被检测出来,登录请求的URL也用手机web版登录然后跳转回正常页面'''
+    options.add_argument('user-agent: "Mozilla/5.0 (Android 6.0.1; Mo…43.0) Gecko/43.0 Firefox/43.0"')
+    #不显示前台界面
+    #options.add_argument('headless')
+    driver = webdriver.Chrome(chrome_options=options)
+    #driver = webdriver.Firefox()
+    driver.maximize_window()
+    return driver
+
+
+driver = init_driver()
 while True:
-    article_id, title, content = spider_tc()
-    if article_id and title and content:
-        dayu.run(article_id, title, content)
+    # article_id, title, content = spider_tc()
+    # if article_id and title and content:
+    #     dayu.run(article_id, title, content)
     reuters_data = spider_reuters()
     if reuters_data:
         for data in reuters_data:
             article_id = data['article_id']
             title = data['title']
-            content = data[' content']
-            dayu.run(article_id, title, content)
+            content = data['content']
+            dayu.run(driver, article_id, title, content)
 
     
 
