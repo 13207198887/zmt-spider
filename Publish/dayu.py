@@ -37,7 +37,7 @@ def run(*args):
         elements_usr = driver.find_element_by_id("login_name")
         elements_usr.send_keys("18523152354")
         elements_pwd = driver.find_element_by_id("password")
-        elements_pwd.send_keys("Spz19950127")
+        elements_pwd.send_keys("")
         # elements_slideBtn = driver.find_element_by_class_name("btn_slide") #PC下的定位
         #判断是否需要滑块验证
         if is_element_exist(driver, ".slider"):
