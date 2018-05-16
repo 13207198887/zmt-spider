@@ -1,5 +1,5 @@
 from Publish import dayu
-from utils.Crawl_article import spider_tc, spider_reuters
+from utils.Crawl_article import spider_tc, spider_reuters, spider_techradar
 
 from selenium import webdriver
 
@@ -30,6 +30,13 @@ while True:
     reuters_data = spider_reuters()
     if reuters_data:
         for data in reuters_data:
+            article_id = data['article_id']
+            title = data['title']
+            content = data['content']
+            dayu.run(driver, article_id, title, content)
+    techradar_data = spider_techradar()
+    if techradar_data:
+        for data in techradar_data:
             article_id = data['article_id']
             title = data['title']
             content = data['content']
