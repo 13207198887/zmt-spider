@@ -32,8 +32,10 @@ def run():
 
     #COOKIE登录
     driver.delete_all_cookies()
-    if os.path.exists(os.getcwd()+'\\utils\\baijiacookie.json'):
-        with open(os.getcwd()+'\\utils\\baijiacookie.json', 'r', encoding='utf-8') as f:
+    # if os.path.exists(os.getcwd()+'\\utils\\baijiacookie.json'):
+    #     with open(os.getcwd()+'\\utils\\baijiacookie.json', 'r', encoding='utf-8') as f:
+    if os.path.exists(os.path.dirname(os.getcwd())+'\\utils\\baijiacookie.json'):
+        with open(os.path.dirname(os.getcwd())+'\\utils\\baijiacookie.json', 'r', encoding='utf-8') as f:
             for cookie in json.loads(f.read()):
                 driver.add_cookie({
                     'domain': '.baidu.com',
@@ -55,11 +57,11 @@ def run():
         elements_login_submit = driver.find_element_by_id("TANGRAM__PSP_3__submit")
         elements_login_submit.click()
         time.sleep(3)
-        driver.get("https://baijiahao.baidu.com/builder/rc/edit?type=news&app_id=1600282401631826")
+        driver.get("https://baijiahao.baidu.com/builder/rc/home")
         #with open(os.getcwd()+'\\utils\\baijiacookie.json', 'w') as f:
         with open(os.path.dirname(os.getcwd())+'\\utils\\baijiacookie.json', 'w') as f:
             f.write(json.dumps(driver.get_cookies()))
-    #driver.get("https://baijiahao.baidu.com/builder/rc/edit?type=news&app_id=1600282401631826")
+    driver.get("https://baijiahao.baidu.com/builder/rc/edit?type=news&app_id=1600282401631826")
     elements_title = driver.find_element_by_xpath("//div[@class='input-box']//input")
     elements_title.send_keys(title)
     time.sleep(3)
@@ -86,7 +88,15 @@ def run():
     #下拉菜单处理，需要引入Select
     #elements_field_select = Select(driver.find_element_by_class_name("ant-select-selection__rendered"))
     elements_publish = driver.find_element_by_xpath("//span[@class='op-list']//button[3]")
+    driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+    time.sleep(20)
     elements_publish.click()
+    time.sleep(10)
+    #处理弹框
+    try:
+        key.tap_key(key.enter_key)
+    except:
+        pass
 
 title = "小米公司又出了一款新品"
 content = "this is a test ,nixinbuxin"
