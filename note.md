@@ -47,7 +47,7 @@
 - https://www.huffingtonpost.com/section/huffpost-home
 - https://www.theverge.com/tech
 - [ok] https://www.reuters.com/news/archive/technologyNews    [!]
-- https://www.techradar.com/news    /or/  https://www.techradar.com/news/archive    [!]
+- [ok] https://www.techradar.com/news/archive    [!]
 - https://www.bloomberg.com/technology   [!]
 
 # 视频
