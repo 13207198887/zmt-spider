@@ -31,14 +31,12 @@ def spider_tc():
     
     tc_link = link
     article_id  = article['id']
-    print(article_id)
     title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '',translate.TranslateByGoogle(article['title']['rendered']))
     content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', article['content']['rendered'])) 
     get_cover_req = urllib.request.Request(link, headers=header)
     get_cover_res = urllib.request.urlopen(get_cover_req).read().decode('utf-8')
     cover_link = re.findall(r'<img src="(.*?)" class="article__featured-image" />', get_cover_res)[0]
     download_cover(cover_link, article_id)
-    print(link)
     return article_id, title, content
 
 
@@ -59,7 +57,6 @@ def spider_reuters():
     link_list = []
     for href in hrefs:
         link_list.append(href['href'])
-    print(link_list)
     #对link列表进行更新判断
     #intersection交集
     #union并集
@@ -87,7 +84,6 @@ def spider_reuters():
         img.pop()
         img_url = "http:"+''.join(img)+"w=1280"
         article_id = link.split('-').pop()
-        print(img_url, article_id)
         download_cover(img_url, article_id)
         title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(en_title))
         content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', en_content)) 
@@ -95,7 +91,6 @@ def spider_reuters():
         data_body['title'] = title
         data_body['content'] = content
         data_list.append(data_body)
-        print(data_body)
     reuters_link = link_list
     return data_list
 
