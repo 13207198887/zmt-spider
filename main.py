@@ -27,20 +27,23 @@ while True:
     # article_id, title, content = spider_tc()
     # if article_id and title and content:
     #     dayu.run(article_id, title, content)
-    reuters_data = spider_reuters()
-    if reuters_data:
-        for data in reuters_data:
-            article_id = data['article_id']
-            title = data['title']
-            content = data['content']
-            dayu.run(driver, article_id, title, content)
+    # reuters_data = spider_reuters()
+    # if reuters_data:
+    #     for data in reuters_data:
+    #         article_id = data['article_id']
+    #         title = data['title']
+    #         content = data['content']
+    #         dayu.run(driver, article_id, title, content)
     techradar_data = spider_techradar()
     if techradar_data:
         for data in techradar_data:
-            article_id = data['article_id']
-            title = data['title']
-            content = data['content']
-            dayu.run(driver, article_id, title, content)
+            try:
+                article_id = data['article_id']
+                title = data['title']
+                content = data['content']
+                dayu.run(driver, article_id, title, content)
+            except:
+                continue
 
     
 

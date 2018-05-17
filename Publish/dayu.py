@@ -98,13 +98,22 @@ def run(*args):
     #等待上传完毕
     time.sleep(5)
     elements_confirm_addPic.click()
-    time.sleep(2)
-    #driver.switch_to_window(driver.window_handles[0])
-    #填写正文，此时图片已插入frame
+    time.sleep(5)
+
+    # #填写正文，此时图片已插入frame
     # driver.switch_to.frame("ueditor_0")
-    # elements_content = driver.find_element_by_xpath("//body[@class='view']//p[@class='empty']") 
-    # elements_content.send_keys(content)
+    # time.sleep(3)
+    # # elements_content = driver.find_element_by_xpath("//body[@class='view']//p[@class='empty']") 
+    # #将光标移至输入正文的元素位置
+    # elements_content = driver.find_element_by_class_name("empty")
+    # ActionChains(driver).move_to_element(elements_content).send_keys(content).perform()
+    # #elements_content.send_keys(content)
+
+    '''鼠标光标定位'''
+    key.tap_key(key.down_key)
+    time.sleep(2)
     driver.switch_to.active_element.send_keys(content)
+
     driver.switch_to.default_content()
     elements_publish = driver.find_element_by_xpath("//div[@class='w-btn-toolbar']/button[4]")
     #辅助封面自动生成(利用js指令将页面下拉到底部)

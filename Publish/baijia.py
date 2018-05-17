@@ -24,7 +24,7 @@ def init_driver():
     return driver
 
 
-key = PyKeyboard
+key = PyKeyboard()
 
 def run():
     driver = init_driver()
@@ -48,6 +48,7 @@ def run():
     
     if driver.current_url == "https://baijiahao.baidu.com/builder/author/register/index":
         driver.get("https://passport.baidu.com")
+        time.sleep(5)
         elements_select_login = driver.find_element_by_id("TANGRAM__PSP_3__footerULoginBtn")
         elements_select_login.click()
         elements_usrname = driver.find_element_by_id("TANGRAM__PSP_3__userName")
@@ -71,9 +72,11 @@ def run():
     time.sleep(3)
     elements_select_pic = driver.find_element_by_id("filePickerReady")
     elements_select_pic.click()
+    # ActionChains(driver).move_to_element(elements_select_pic).click(elements_select_pic).perform()
+    # time.sleep(2)
     pic_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'\\cover\\'+str(article_id)+'.png'
     print(pic_path)
-    #key.tap_key(key.shift_key)
+    key.tap_key(key.shift_key)
     key.type_string(pic_path)
     key.tap_key(key.enter_key)
     key.tap_key(key.enter_key)

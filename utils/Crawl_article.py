@@ -79,8 +79,10 @@ def spider_reuters():
         content_res = urllib.request.urlopen(conten_req).read().decode('utf-8')
         en_title = re.findall(r'<h1 class="headline_2zdFM">(.*?)</h1>', content_res)[0]
         en_content = re.findall(r'<div class="body_1gnLA">(.*?)<div class="container_28wm1">', content_res)[0]
-        img_src = re.findall(r'<div class="container_1Z7A0" style="background-image:none"><img src="(.*?)".*?>', content_res)[0]
-        img = img_src.split('amp;')
+        img_src = re.findall(r'<div class="container_1Z7A0" style="background-image:none"><img src="(.*?)".*?>', content_res)
+        if not img_src:
+            continue
+        img = img_src[0].split('amp;')
         img.pop()
         img_url = "http:"+''.join(img)+"w=1280"
         article_id = link.split('-').pop()
@@ -129,17 +131,18 @@ def spider_techradar():
         techradar_link = link_list
     data_list = []
     for link in techradar_link:
+        print(link)
         data_body = {}
         conten_req = urllib.request.Request(link, headers=header)
         content_res = urllib.request.urlopen(conten_req).read().decode('utf-8')
-        en_title = re.findall(r'<h1 itemprop="name headline">(.*?)</h1>', content_res)[0]
+        en_title = re.findall(r'<h1 itemprop="name headline">(.*?)</h1>', content_res, re.I|re.S|re.M)[0]
         img_url = re.findall(r'<img .*? data-original-mos="(.*?)" .*?>', content_res)[0]
         soup = BeautifulSoup(content_res, 'html.parser')
-        en_content = soup.find("div", {"id": "article-body"})
+        en_content = soup.find_all("div", {"id": "article-body"})[0]
         article_id = (img_url.split('/')[-1]).split('.')[0]
         download_cover(img_url, article_id)
-        title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(en_title))
-        content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', en_content)) 
+        title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(str(en_title)))
+        content = translate.TranslateByGoogle(str(re.sub(r'</?\w+[^>]*>', '', str(en_content))))
         data_body['article_id'] = article_id
         data_body['title'] = title
         data_body['content'] = content

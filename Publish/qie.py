@@ -24,7 +24,7 @@ def init_driver():
     return driver
 
 
-key = PyKeyboard
+key = PyKeyboard()
 
 def run():
     driver = init_driver()
