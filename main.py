@@ -1,4 +1,4 @@
-from Publish import dayu
+from Publish import dayu, qie, baijia
 from utils.Crawl_article import spider_tc, spider_reuters, spider_techradar
 
 from selenium import webdriver
@@ -34,16 +34,32 @@ while True:
     #         title = data['title']
     #         content = data['content']
     #         dayu.run(driver, article_id, title, content)
-    techradar_data = spider_techradar()
-    if techradar_data:
-        for data in techradar_data:
-            try:
-                article_id = data['article_id']
-                title = data['title']
-                content = data['content']
-                dayu.run(driver, article_id, title, content)
-            except:
-                continue
+    # techradar_data = spider_techradar()
+    # if techradar_data:
+    #     for data in techradar_data:
+    #         try:
+    #             article_id = data['article_id']
+    #             title = data['title']
+    #             content = data['content']
+    #             dayu.run(driver, article_id, title, content)
+    #         except:
+    #             continue
+
+    reuters_data = spider_reuters()
+    if reuters_data:
+        for data in reuters_data:
+            article_id = data['article_id']
+            title = data['title']
+            content = data['content']
+            qie.run(driver, article_id, title, content)
+
+    # reuters_data = spider_reuters()
+    # if reuters_data:
+    #     for data in reuters_data:
+    #         article_id = data['article_id']
+    #         title = data['title']
+    #         content = data['content']
+    #         baijia.run(driver, article_id, title, content)
 
     
 
