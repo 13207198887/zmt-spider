@@ -66,6 +66,7 @@ def whether_published(table_name, link):
     cursor.execute("select * from '%s' where link='%s'" % (table_name, link))
     values = cursor.fetchone()
     if values:
+        print("该文章已发布过了:%s" % link)
         return True
     else:
         return False

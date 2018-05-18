@@ -106,8 +106,7 @@ while True:
 
         if not db.whether_published("qie", link):
             try:
-                qie.run(qie_usr, qie_pwd, driver, article_id, title, content)
-                
+                qie.run(qie_usr, qie_pwd, driver, article_id, title, content)              
             except:
                 pass
             else:
