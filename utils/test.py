@@ -47,20 +47,22 @@ def spider_techradar():
         data_body = {}
         conten_req = urllib.request.Request(link, headers=header)
         content_res = urllib.request.urlopen(conten_req).read().decode('utf-8')
-        en_title = re.findall(r'<h1 itemprop="name headline">(.*?)</h1>', content_res)[0]
-        img_url = re.findall(r'<img .*? data-original-mos="(.*?)" .*?>', content_res)[0]
-        print(img_url)
+        en_title = re.findall(r'<h1 itemprop="name headline">(.*?)</h1>', content_res, re.I|re.S|re.M)[0]
         soup = BeautifulSoup(content_res, 'html.parser')
-        en_content = soup.find("div", {"id": "article-body"})
-        article_id = (img_url.split('/')[-1]).split('.')[0]
-        download_cover(img_url, article_id)
-        #title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(en_title))
-        #content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', en_content)) 
+        en_content = soup.find_all("div", {"id": "article-body"})[0]
+        en_content = BeautifulSoup(str(en_content), 'html.parser').get_text()
+        img_url = re.findall(r'<img .*? data-original-mos="(.*?)" .*?>', content_res)[0]
+        if not img_url:
+            article_id = "test"
+        else:
+            article_id = (img_url.split('/')[-1]).split('.')[0]
+        title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(en_title), re.I|re.S|re.M)
+        content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', str(en_content), re.I|re.S|re.M))
         data_body['article_id'] = article_id
-        # data_body['title'] = title
-        # data_body['content'] = content
+        data_body['title'] = title
+        data_body['content'] = content
         data_list.append(data_body)
-        print(link, en_title, en_content)
+        print(data_body)
     techradar_link = link_list
     #return data_list
 

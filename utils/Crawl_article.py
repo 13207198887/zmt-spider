@@ -5,14 +5,12 @@ import re
 from bs4 import BeautifulSoup
 import os
 
-from utils import translate
+from utils import translate, db
 
 
-tc_link = ''
 def spider_tc():
     '''爬取techcrunch.com站点'''
 
-    global tc_link
     tc_url = "https://techcrunch.com/wp-json/tc/v1/magazine?page=1&_embed=true&_envelope=true&categories=449557028"
     header = {
         "referer": "https://techcrunch.com/mobile/",
@@ -22,29 +20,30 @@ def spider_tc():
     req = urllib.request.Request(tc_url, headers=header)
     res = urllib.request.urlopen(req).read()
     js_result = json.loads(res)
-    #for article in js_result['body']:
-    #只爬取最新的一篇文章
-    article = js_result['body'][0]
-    link = article['guid']['rendered']
-    if tc_link == link:
-        return None, None, None
-    
-    tc_link = link
-    article_id  = article['id']
-    title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '',translate.TranslateByGoogle(article['title']['rendered']))
-    content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', article['content']['rendered'])) 
-    get_cover_req = urllib.request.Request(link, headers=header)
-    get_cover_res = urllib.request.urlopen(get_cover_req).read().decode('utf-8')
-    cover_link = re.findall(r'<img src="(.*?)" class="article__featured-image" />', get_cover_res)[0]
-    download_cover(cover_link, article_id)
-    return article_id, title, content
+    for article in js_result['body']:
+        link = article['guid']['rendered']
+        if db.exist_article(link):
+            continue
+        article_id  = article['id']
+        title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '',translate.TranslateByGoogle(article['title']['rendered']))
+        content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', article['content']['rendered'])) 
+        get_cover_req = urllib.request.Request(link, headers=header)
+        get_cover_res = urllib.request.urlopen(get_cover_req).read().decode('utf-8')
+        cover_link = re.findall(r'<img src="(.*?)" class="article__featured-image" />', get_cover_res)[0]
+        if not cover_link:
+            article_id = "test"
+        else:            
+            download_cover(cover_link, article_id)
+        if not content:
+            print("该链接没有内容：%s" % link)
+        else:
+            db.add_article(link, article_id, title, content)
+            print(link)
 
 
-reuters_link = None
 def spider_reuters():
     '''爬取euters.com站点'''
 
-    global reuters_link
     reuters_url = 'https://www.reuters.com/news/archive/technologyNews'
     header = {
         "referer": "https://www.google.com.hk/",
@@ -61,19 +60,19 @@ def spider_reuters():
     #intersection交集
     #union并集
     #difference差集
-    if reuters_link:
-        list_difference = list(set(link_list).difference(set(reuters_link)))
-        if list_difference:
-            # list_intersection = list(set(reuters_link).intersection(set(link_list)))
-            # reuters_link = list_difference + list_intersection
-            reuters_link = list_difference
-        else:
-            return None
-    else:
-        reuters_link = link_list
-    data_list = []
-    for link in reuters_link:
-        data_body = {}
+    # if reuters_link:
+    #     list_difference = list(set(link_list).difference(set(reuters_link)))
+    #     if list_difference:
+    #         # list_intersection = list(set(reuters_link).intersection(set(link_list)))
+    #         # reuters_link = list_difference + list_intersection
+    #         reuters_link = list_difference
+    #     else:
+    #         return None
+    # else:
+    #     reuters_link = link_list
+    for link in link_list:
+        if db.exist_article(link):
+            continue
         link = "https://www.reuters.com"+link
         conten_req = urllib.request.Request(link, headers=header)
         content_res = urllib.request.urlopen(conten_req).read().decode('utf-8')
@@ -81,27 +80,25 @@ def spider_reuters():
         en_content = re.findall(r'<div class="body_1gnLA">(.*?)<div class="container_28wm1">', content_res)[0]
         img_src = re.findall(r'<div class="container_1Z7A0" style="background-image:none"><img src="(.*?)".*?>', content_res)
         if not img_src:
-            continue
-        img = img_src[0].split('amp;')
-        img.pop()
-        img_url = "http:"+''.join(img)+"w=1280"
-        article_id = link.split('-').pop()
-        download_cover(img_url, article_id)
+            #没有封面的话直接用本地预留的test.png
+            article_id = "test"
+        else:
+            img = img_src[0].split('amp;')
+            img.pop()
+            img_url = "http:"+''.join(img)+"w=1280"
+            article_id = link.split('-').pop()
+            download_cover(img_url, article_id)
         title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(en_title))
         content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', en_content)) 
-        data_body['article_id'] = article_id
-        data_body['title'] = title
-        data_body['content'] = content
-        data_list.append(data_body)
-    reuters_link = link_list
-    return data_list
+        if not content:
+            print("该链接没有内容：%s" % link)
+        else:
+            db.add_article(link, article_id, title, content)
+            print(link)
 
-
-techradar_link = None
 def spider_techradar():
     '''爬取techradar.com站点'''
 
-    global techradar_link
     techradar_url = 'https://www.techradar.com/news/archive'
     header = {
         "referer": "https://www.google.com.hk/",
@@ -115,43 +112,34 @@ def spider_techradar():
     link_list = []
     for href in hrefs:
         link_list.append(href['href'])
-    #对link列表进行更新判断
-    #intersection交集
-    #union并集
-    #difference差集
-    if techradar_link:
-        list_difference = list(set(link_list).difference(set(techradar_link)))
-        if list_difference:
-            # list_intersection = list(set(techradar_link).intersection(set(link_list)))
-            # techradar_link = list_difference + list_intersection
-            techradar_link = list_difference
-        else:
-            return None
-    else:
-        techradar_link = link_list
-    data_list = []
-    for link in techradar_link:
+    for link in link_list:
+        if db.exist_article(link):
+            continue
         try:
-            data_body = {}
             conten_req = urllib.request.Request(link, headers=header)
             content_res = urllib.request.urlopen(conten_req).read().decode('utf-8')
             en_title = re.findall(r'<h1 itemprop="name headline">(.*?)</h1>', content_res, re.I|re.S|re.M)[0]
-            img_url = re.findall(r'<img .*? data-original-mos="(.*?)" .*?>', content_res)[0]
             soup = BeautifulSoup(content_res, 'html.parser')
             en_content = soup.find_all("div", {"id": "article-body"})[0]
-            article_id = (img_url.split('/')[-1]).split('.')[0]
-            download_cover(img_url, article_id)
+            en_content = BeautifulSoup(str(en_content), 'html.parser').get_text()
+            img_url = re.findall(r'<img .*? data-original-mos="(.*?)" .*?>', content_res)[0]
+            if not img_url:
+                article_id = "test"
+            else:
+                article_id = (img_url.split('/')[-1]).split('.')[0]
             title = re.sub(r'[\s+\.\!\/_,$%^*(+\"\')]+|[+——()?【】“”！，。？、~@#￥%……&*（）]+', '', translate.TranslateByGoogle(en_title), re.I|re.S|re.M)
-            content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', en_content, re.I|re.S|re.M))
-        except:
+            content = translate.TranslateByGoogle(re.sub(r'</?\w+[^>]*>', '', str(en_content), re.I|re.S|re.M))
+        except Exception as e:
+            print('='*20)
             print("抓取失败：%s" % link)
+            print("错误信息：%s" % e )
+            print('='*20)
             continue
-        data_body['article_id'] = article_id
-        data_body['title'] = title
-        data_body['content'] = content
-        data_list.append(data_body)
-    techradar_link = link_list
-    return data_list
+        if not content:
+            print("该链接没有内容：%s" % link)
+        else:
+            db.add_article(link, article_id, title, content)
+            print(link)
 
 
 

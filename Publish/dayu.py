@@ -9,10 +9,16 @@ import json
 key = PyKeyboard()
 
 def run(*args):
-    driver, article_id, title, content = args
+    usr, pwd, driver, article_id, title, content = args
     '''发布流程
     进入文章发表页->填写文章标题->插入图片->添加本地图片->确认添加(自动关闭图片添加的窗口回到正文)->(暂时不填入图片描述)填写文章正文(此时已自动生成封面)->保存
     '''
+    #处理弹框
+    try:
+        key.tap_key(key.enter_key)
+    except:
+        pass
+        
     driver.get("https://mp.dayu.com/dashboard/article/write")
 
     #COOKIE登录
@@ -35,9 +41,9 @@ def run(*args):
         time.sleep(5)
         driver.switch_to.frame(driver.find_element_by_xpath("//div[@class='loginPage-mobileLogin_body']//iframe"))
         elements_usr = driver.find_element_by_id("login_name")
-        elements_usr.send_keys("18523152354")
+        elements_usr.send_keys(usr)
         elements_pwd = driver.find_element_by_id("password")
-        elements_pwd.send_keys("")
+        elements_pwd.send_keys(pwd)
         # elements_slideBtn = driver.find_element_by_class_name("btn_slide") #PC下的定位
         #判断是否需要滑块验证
         if is_element_exist(driver, ".slider"):

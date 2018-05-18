@@ -10,8 +10,14 @@ import json
 key = PyKeyboard()
 
 def run(*args):
-    driver, article_id, title, content = args
+    usr, pwd, driver, article_id, title, content = args
 
+    #处理弹框
+    try:
+        key.tap_key(key.enter_key)
+    except:
+        pass
+        
     driver.get("https://baijiahao.baidu.com/builder/rc/edit?type=news&app_id=1600282401631826")
 
     #COOKIE登录
@@ -37,9 +43,9 @@ def run(*args):
         elements_select_login = driver.find_element_by_id("TANGRAM__PSP_3__footerULoginBtn")
         elements_select_login.click()
         elements_usrname = driver.find_element_by_id("TANGRAM__PSP_3__userName")
-        elements_usrname.send_keys("18523152354")
+        elements_usrname.send_keys(usr)
         elements_pwd = driver.find_element_by_id("TANGRAM__PSP_3__password")
-        elements_pwd.send_keys("")
+        elements_pwd.send_keys(pwd)
         elements_login_submit = driver.find_element_by_id("TANGRAM__PSP_3__submit")
         elements_login_submit.click()
         time.sleep(3)

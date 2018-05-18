@@ -10,8 +10,14 @@ import json
 key = PyKeyboard()
 
 def run(*args):
-    driver, article_id, title, content = args
+    usr, pwd, driver, article_id, title, content = args
 
+    #处理弹框
+    try:
+        key.tap_key(key.enter_key)
+    except:
+        pass
+        
     driver.get("https://om.qq.com/article/articlePublish")
 
     #COOKIE登录
@@ -46,9 +52,9 @@ def run(*args):
         key.tap_key(key.tab_key)
         key.tap_key(key.tab_key)
         key.tap_key(key.tab_key)
-        driver.switch_to.active_element.send_keys("201417160@qq.com")
+        driver.switch_to.active_element.send_keys(usr)
         key.tap_key(key.tab_key)
-        driver.switch_to.active_element.send_keys("")
+        driver.switch_to.active_element.send_keys(pwd)
         key.tap_key(key.enter_key)
         time.sleep(5)
 
