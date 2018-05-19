@@ -11,7 +11,7 @@ def exist_article(link):
     '''查询文章是否收录'''
     conn = init_db()
     cursor = conn.cursor()
-    cursor.execute("select * from articles where link=?", link )
+    cursor.execute("select * from articles where link='%s'" % link)
     values = cursor.fetchone()
     if values:
         return True
@@ -50,7 +50,7 @@ def published_article(table_name, link):
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "insert into ? (article_link) values(?)", (table_name, link)
+            "insert into '%s' (article_link) values ('%s')" % (table_name, link)
         )
         conn.commit()
     except Exception as e:
@@ -62,7 +62,7 @@ def published_article(table_name, link):
         #已发布的文章link记录成功后清空articles表中对应的文章content，减少db文件体积
         try:
             cursor.execute(
-                "update articles set content = ? where link = ?", ("已发布", link)
+                "update articles set content = '%s' where link = '%s'" % ("已发布", link)
             )
             conn.commit()
         except Exception as e:
@@ -77,7 +77,7 @@ def whether_published(table_name, link):
     '''
     conn = init_db()
     cursor = conn.cursor()
-    cursor.execute("select * from ? where link=?", (table_name, link))
+    cursor.execute("select * from '%s' where article_link ='%s'" % (table_name, link))
     values = cursor.fetchone()
     if values:
         print("该文章已发布过了:%s" % link)

@@ -125,8 +125,7 @@ def run(*args):
     elements_publish = driver.find_element_by_xpath("//div[@class='w-btn-toolbar']/button[4]")
     #辅助封面自动生成(利用js指令将页面下拉到底部)
     driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-    #文本太长的情况下需要时间   
-    time.sleep(70)
+    time.sleep(20)
     elements_publish.click()
     time.sleep(10)
     #处理弹框

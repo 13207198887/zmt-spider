@@ -27,17 +27,17 @@ def init_table():
 
     make_db_table(
         '''create table if not exists dayu (
-        link text
+        article_link text
     )''')
 
     make_db_table(
         '''create table if not exists qie (
-        link text
+        article_link text
     )''')
 
     make_db_table(
         '''create table if not exists baijia (
-        link text
+        article_link text
     )''')
 
 
@@ -70,26 +70,28 @@ def get_user(stage):
 
 def start_spider():
     '''多线程开启爬虫'''
-    tc = threading.Thread(target=spider_tc)
-    reuters = threading.Thread(target=spider_reuters)
-    techradar = threading.Thread(target=spider_techradar)
-    tc.start()
-    reuters.start()
-    techradar.start()
-    # spider_tc()
-    # spider_reuters()
-    # spider_techradar()
+    # tc = threading.Thread(target=spider_tc)
+    # reuters = threading.Thread(target=spider_reuters)
+    # techradar = threading.Thread(target=spider_techradar)
+    # tc.start()
+    # reuters.start()
+    # techradar.start()
+    spider_tc()
+    spider_reuters()
+    spider_techradar()
 
-
+print("初始化数据库")
 init_table()
 
+print("初始化浏览器")
 driver = init_driver()
 
+print("获取平台账户信息")
 dayu_usr, dayu_pwd = get_user("dayu") 
 baijia_usr, baijia_pwd = get_user("baijia")
 qie_usr, qie_pwd = get_user("qie")
 
-
+print('='*30+"--START--"+'='*30)
 while True:
     start_spider()
     articles = db.get_articles()
@@ -119,9 +121,9 @@ while True:
                 pass 
             else:
                 db.published_article("baijia", link)  
-    print("="*30)
-    print("全部文章已发布完成")
-    print("="*30)
+    # print("="*30)
+    # print("全部文章已发布完成")
+    # print("="*30)
     #全部发布完后清空封面文件夹(保留test.png)
     # cover_path = os.getcwd()+"\\cover\\"
     # for f_name in os.listdir(cover_path):
