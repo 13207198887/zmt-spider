@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+#===============================================文章=======================================
 def init_db():
     '''初始化本地数据库
     '''
@@ -81,6 +82,45 @@ def whether_published(table_name, link):
     values = cursor.fetchone()
     if values:
         print("该文章已发布过了:%s" % link)
+        return True
+    else:
+        return False
+
+
+#============================================视频===========================================
+def init_videoDB():
+    '''初始化本地视频下载链接数据库
+    '''
+    conn = sqlite3.connect(os.getcwd()+'\\utils\\videos.db')
+    return conn
+
+def download_video(link):
+    '''添加已下载的视频link
+    param: link->视频下载链接
+    '''
+    conn = init_videoDB()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "insert into videos (download_link) values ('%s')" % link
+        )
+        conn.commit()
+        print("该视频下载链接成功入库：%s" % link)
+    except Exception as e:
+        conn.rollback()
+        print("Error：%s" % e)
+        print("该链接视频已下载但无法入库该link：%s" % link )
+    conn.close()
+
+
+def whether__download(link):
+    '''查询视频是否已经下载过了'''
+    conn = init_videoDB()
+    cursor = conn.cursor()
+    cursor.execute("select * from videos where download_link='%s'" % link)
+    values = cursor.fetchone()
+    if values:
+        print("该视频已下载过了：%s" % link)
         return True
     else:
         return False

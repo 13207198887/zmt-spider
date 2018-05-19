@@ -4,6 +4,10 @@ import re
 import os
 import subprocess
 import json
+import datetime
+import time
+
+from utils import db
 
 
 class Tiktok:
@@ -29,7 +33,7 @@ class Tiktok:
         收藏视频列表https://www.tiktokv.com/aweme/v1/aweme/favorite/?user_id=6535937954585051138{&max_cursor=0&count=2}
         我的UID:6557148225815494657
         '''
-        url = "https://www.tiktokv.com/aweme/v1/aweme/favorite/?user_id=6535937954585051138"
+        url = "https://www.tiktokv.com/aweme/v1/aweme/favorite/?user_id=6557148225815494657"
         json_res = urllib.request.urlopen(url)
         values = json.loads(json_res.read())
         for value in values['aweme_list']:
@@ -37,18 +41,34 @@ class Tiktok:
             download_url = video_url.replace('playwm', 'play').replace('&amp;', '&').replace('line=0', 'line=1')
             #根据需要看是否需要下载封面图
             #cover_url = value['video']['cover']['url_list'][0]
-            #video_desc = value['desc'] 可能没有描述和标题
-            self.download_cli(download_url, "你尽管点开，不好看算我输.mp4")
+            #video_desc = value['desc'] #可能没有描述和标题
+            fname = str(datetime.datetime.now().strftime('%Y%m%d%H%M%S')) + '.mp4'
+            self.download_cli(download_url, fname)
+
+            if os.path.exists(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\vedio\\"+fname):
+                print("该视频下载成功,即将入库：%s" % url)
+                db.download_video(url)
+            else:
+                print("该视频下载失败：%s" % url)
+        #time.sleep(60*10)
+        
 
 
     def download_cli(self, url, fname):
         '''调用ffmpeg进行视频下载
         param: url->下载链接  fname->下载文件名
         '''
-        ffmpeg_path = os.path.dirname(os.getcwd())+"\\env\\ffmpeg"
-        download_path = os.path.dirname(os.getcwd())+"\\vedio\\"+fname
-        print('Download==> {}'.format(url))
-        subprocess.call([ffmpeg_path, '-i', url, '-f', 'mp4', download_path])
-
+        if db.whether__download(url):
+            return
+        try:
+            ffmpeg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\env\\ffmpeg"
+            print(ffmpeg_path)
+            download_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\video\\"+fname
+            print(download_path)
+            print('Download==> {}'.format(url))
+            subprocess.call([ffmpeg_path, '-i', url, download_path])
+        except Exception as e:
+            print("Error: %s" % e)
+            print("该视频下载失败：%s" % url)
 
 #tiktok("https://www.tiktokv.com/i18n/share/video/6544720741055597825/?region=cn&mid=6429187299342453505")
