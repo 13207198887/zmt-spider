@@ -42,7 +42,7 @@ def get_articles():
     return values
 
 def published_article(table_name, link):
-    '''添加已发布的文章link
+    '''添加已发布的文章link,并清空对应文章的内容
     table_name: 表名也就是平台的名字
     '''
     conn = init_db()
@@ -55,6 +55,17 @@ def published_article(table_name, link):
     except:
         conn.rollback()
         print("该文章已发布但无法入库：%s" % link )
+    else:
+        cursor = conn.cursor()
+        #已发布的文章link记录成功后清空articles表中对应的文章content，减少db文件体积
+        try:
+            cursor.execute(
+                "update articles set content = ? where link = ?", ("已发布", link)
+            )
+            conn.commit()
+        except:
+            conn.rollback()
+            print("该文章清空内容失败：%s" % link )
     conn.close()
 
 def whether_published(table_name, link):
@@ -70,4 +81,3 @@ def whether_published(table_name, link):
         return True
     else:
         return False
-

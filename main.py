@@ -119,8 +119,15 @@ while True:
                 pass 
             else:
                 db.published_article("baijia", link)  
-
-
+    print("="*30)
+    print("全部文章已发布完成")
+    print("="*30)
+    #全部发布完后清空封面文件夹(保留test.png)
+    cover_path = os.getcwd()+"\\cover\\"
+    for f_name in os.listdir(cover_path):
+        if f_name != "test.png":
+            os.remove(cover_path+f_name)
+    print("封面文件夹已清空")
     
 
 
