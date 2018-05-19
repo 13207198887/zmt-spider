@@ -11,7 +11,7 @@ def exist_article(link):
     '''查询文章是否收录'''
     conn = init_db()
     cursor = conn.cursor()
-    cursor.execute("select * from articles where link='%s'" % link )
+    cursor.execute("select * from articles where link=?", link )
     values = cursor.fetchone()
     if values:
         return True
@@ -24,11 +24,12 @@ def add_article(link, article_id, title, content):
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "insert into articles (link, article_id, title, content) values ('%s', '%s', '%s', '%s')" % (link, str(article_id), title, content)
+            "insert into articles (link, article_id, title, content) values (?, ?, ?, ?)" , (link, str(article_id), title, content)
         )
         conn.commit()
-    except:
+    except Exception as e:
         conn.rollback()
+        print("Error：%s" % e)
         print("存入数据库失败：%s" % link )
     conn.commit()
     conn.close()
@@ -49,11 +50,12 @@ def published_article(table_name, link):
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "insert into '%s' (article_link) values('%s')" % (table_name, link)
+            "insert into ? (article_link) values(?)", (table_name, link)
         )
         conn.commit()
-    except:
+    except Exception as e:
         conn.rollback()
+        print("Error：%s" % e)
         print("该文章已发布但无法入库：%s" % link )
     else:
         cursor = conn.cursor()
@@ -63,8 +65,9 @@ def published_article(table_name, link):
                 "update articles set content = ? where link = ?", ("已发布", link)
             )
             conn.commit()
-        except:
+        except Exception as e:
             conn.rollback()
+            print("Error：%s" % e)
             print("该文章清空内容失败：%s" % link )
     conn.close()
 
@@ -74,7 +77,7 @@ def whether_published(table_name, link):
     '''
     conn = init_db()
     cursor = conn.cursor()
-    cursor.execute("select * from '%s' where link='%s'" % (table_name, link))
+    cursor.execute("select * from ? where link=?", (table_name, link))
     values = cursor.fetchone()
     if values:
         print("该文章已发布过了:%s" % link)
