@@ -5,6 +5,7 @@ from pykeyboard import PyKeyboard
 import time
 import os
 import json
+from utils import clipboard
 
 
 key = PyKeyboard()
@@ -83,17 +84,16 @@ def run(*args):
     elements_select_pic = driver.find_element_by_class_name("upload-block-media")
     elements_select_pic.click()
     pic_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'\\cover\\'+str(article_id)+'.png'
-    print(pic_path)
-    key.tap_key(key.shift_key)
-    time.sleep(1)
-    key.type_string(pic_path)
+    clipboard.settext(pic_path)
+    key.press_keys([key.control_key, 'V'])
     key.tap_key(key.enter_key)
-    time.sleep(1)
     key.tap_key(key.enter_key)
     time.sleep(5)
     elements_confirm_addPic = driver.find_element_by_class_name("layui-layer-btn0")
     elements_confirm_addPic.click()
-    driver.switch_to.active_element.send_keys(content)
+    # driver.switch_to.active_element.send_keys(content)
+    clipboard.settext(content)
+    key.press_keys([key.control_key, 'V'])
     driver.switch_to.default_content()
     #领域的选择默认
     # driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")

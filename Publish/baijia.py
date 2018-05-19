@@ -5,6 +5,7 @@ from pykeyboard import PyKeyboard
 import time
 import os
 import json
+from utils import clipboard
 
 
 key = PyKeyboard()
@@ -67,9 +68,8 @@ def run(*args):
     # time.sleep(2)
     driver.switch_to.default_content()
     pic_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'\\cover\\'+str(article_id)+'.png'
-    print(pic_path)
-    key.tap_key(key.shift_key)
-    key.type_string(pic_path)
+    clipboard.settext(pic_path)
+    key.press_keys([key.control_key, 'V'])
     key.tap_key(key.enter_key)
     key.tap_key(key.enter_key)
     time.sleep(3)
@@ -77,7 +77,9 @@ def run(*args):
     elements_confirm_addPic = driver.find_element_by_id("edui19")
     ActionChains(driver).move_to_element(elements_confirm_addPic).click(elements_confirm_addPic).perform()
     #elements_confirm_addPic.click()
-    driver.switch_to.active_element.send_keys(content)
+    # driver.switch_to.active_element.send_keys(content)
+    clipboard.settext(content)
+    key.press_keys([key.control_key, 'V'])
     driver.switch_to.default_content()
     #跳过封面方式选择
     # elements_cover_radio = driver.find_element_by_xpath("//div[@class='cover-radio-group']//lable[3]/span/input")

@@ -4,7 +4,7 @@ from pykeyboard import PyKeyboard
 import time
 import os
 import json
-
+from utils import clipboard
 
 key = PyKeyboard()
 
@@ -94,9 +94,8 @@ def run(*args):
     time.sleep(2)
     #获取本地封面的路径
     pic_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'\\cover\\'+str(article_id)+'.png'
-    #TODO:这里有bug,中文下会输入英文。英文下会输入中文
-    key.tap_key(key.shift_key)
-    key.type_string(pic_path)
+    clipboard.settext(pic_path)
+    key.press_keys([key.control_key, 'V'])
     key.tap_key(key.enter_key)
     key.tap_key(key.enter_key)
     time.sleep(2)
@@ -118,7 +117,9 @@ def run(*args):
     '''鼠标光标定位'''
     key.tap_key(key.down_key)
     time.sleep(2)
-    driver.switch_to.active_element.send_keys(content)
+    #driver.switch_to.active_element.send_keys(content)
+    clipboard.settext(content)
+    key.press_keys([key.control_key, 'V'])
 
     driver.switch_to.default_content()
     elements_publish = driver.find_element_by_xpath("//div[@class='w-btn-toolbar']/button[4]")
