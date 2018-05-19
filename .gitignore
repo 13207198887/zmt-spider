@@ -11,3 +11,4 @@ cover/
 *.json
 *.bat
 *.yml
+*.pyc
