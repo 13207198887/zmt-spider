@@ -4,8 +4,8 @@ import re
 import os
 import subprocess
 import json
-import datetime
 import time
+import uuid
 
 from utils import db
 
@@ -33,23 +33,29 @@ class Tiktok:
         收藏视频列表https://www.tiktokv.com/aweme/v1/aweme/favorite/?user_id=6535937954585051138{&max_cursor=0&count=2}
         我的UID:6557148225815494657
         '''
-        url = "https://www.tiktokv.com/aweme/v1/aweme/favorite/?user_id=6557148225815494657"
+        url = "https://www.tiktokv.com/aweme/v1/aweme/favorite/?user_id=6557148225815494657&max_cursor=0&count=100"
+        base_downurl = "https://api.tiktokv.com/aweme/v1/play/?video_id={}&line=1"
         json_res = urllib.request.urlopen(url)
         values = json.loads(json_res.read())
         for value in values['aweme_list']:
-            video_url = value['video']['play_addr']['url_list'][0]
-            download_url = video_url.replace('playwm', 'play').replace('&amp;', '&').replace('line=0', 'line=1')
+            video_uri = value['video']['play_addr']['uri']
+            download_url = base_downurl.format(str(video_uri))
             #根据需要看是否需要下载封面图
             #cover_url = value['video']['cover']['url_list'][0]
             #video_desc = value['desc'] #可能没有描述和标题
-            fname = str(datetime.datetime.now().strftime('%Y%m%d%H%M%S')) + '.mp4'
-            self.download_cli(download_url, fname)
+            fname = str(uuid.uuid1()) + '.mp4'
 
-            if os.path.exists(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\vedio\\"+fname):
-                print("该视频下载成功,即将入库：%s" % url)
-                db.download_video(url)
+            #判断是否已经下载过了该视频
+            if db.whether__download(url):
+                continue
+
+            self.download_cli(download_url, fname)
+            time.sleep(5)
+            if os.path.exists(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\video\\"+fname):
+                print("该视频下载成功,即将入库：%s" % download_url)
+                db.download_video(download_url)
             else:
-                print("该视频下载失败：%s" % url)
+                print("该视频下载失败：%s" % download_url)
         #time.sleep(60*10)
         
 
@@ -58,11 +64,8 @@ class Tiktok:
         '''调用ffmpeg进行视频下载
         param: url->下载链接  fname->下载文件名
         '''
-        if db.whether__download(url):
-            return
         try:
             ffmpeg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\env\\ffmpeg"
-            print(ffmpeg_path)
             download_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+"\\video\\"+fname
             print(download_path)
             print('Download==> {}'.format(url))

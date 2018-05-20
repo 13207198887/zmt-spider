@@ -105,11 +105,11 @@ def download_video(link):
             "insert into videos (download_link) values ('%s')" % link
         )
         conn.commit()
-        print("该视频下载链接成功入库：%s" % link)
+        print("成功入库：%s" % link)
     except Exception as e:
         conn.rollback()
         print("Error：%s" % e)
-        print("该链接视频已下载但无法入库该link：%s" % link )
+        print("入库失败：%s" % link )
     conn.close()
 
 
