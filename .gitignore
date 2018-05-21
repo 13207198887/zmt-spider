@@ -2,6 +2,7 @@
 node_modules/
 cover/
 vedio/
+articles.db
 
 # Editor directories and files
 .idea
