@@ -1,5 +1,6 @@
 import urllib
 from urllib import request
+import requests
 import re
 import os
 import subprocess
@@ -40,6 +41,8 @@ class Tiktok:
         for value in values['aweme_list']:
             video_uri = value['video']['play_addr']['uri']
             download_url = base_downurl.format(str(video_uri))
+            #解决下载地址重定向
+            download_url = requests.get(download_url, allow_redirects=False).headers['Location']
             #根据需要看是否需要下载封面图
             #cover_url = value['video']['cover']['url_list'][0]
             #video_desc = value['desc'] #可能没有描述和标题
