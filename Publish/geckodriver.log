@@ -320,14 +320,21 @@ Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr
 1526570304775	Marionette	WARN	TLS certificate errors will be ignored for this session
 Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
 JavaScript warning: https://bjhcdn.bdstatic.com/fe-react/static/media/jquery-1.10.2.min.ec6ce613.js, line 2: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
-1526570401384	geckodriver	INFO	geckodriver 0.20.1
-1526570401393	geckodriver	INFO	Listening on 127.0.0.1:62109
-1526570401929	mozrunner::runner	INFO	Running command: "D:\\Program Files (x86)\\firefox.exe" "-marionette" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.8Kd8IkKc6ROc"
-1526570404672	Marionette	INFO	Listening on port 62114
-1526570405046	Marionette	WARN	TLS certificate errors will be ignored for this session
+[Child 6556, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
 Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
-JavaScript warning: https://bjhcdn.bdstatic.com/fe-react/static/media/jquery-1.10.2.min.ec6ce613.js, line 2: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
-console.error: "[Exception... \"Component is not available\"  nsresult: \"0x80040111 (NS_ERROR_NOT_AVAILABLE)\"  location: \"JS frame :: resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/inspector/node.js :: get displayType :: line 232\"  data: no]: get displayType@resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/inspector/node.js:232:5\n_onReflows@resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/inspector/walker.js:314:11\nemit@resource://devtools/shared/base-loader.js -> resource://devtools/shared/event-emitter.js:178:37\nemit@resource://devtools/shared/base-loader.js -> resource://devtools/shared/event-emitter.js:255:29\n_startEventLoop@resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/reflow.js:312:7\nnotify@resource://gre/modules/Timer.jsm:44:7\n"
+[Parent 8328, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
+[Child 10040, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 10040, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 8328, Gecko_IOThread] WARNING: file z:/build/build/src/ipc/chromium/src/base/process_util_win.cc, line 188
+[Parent 8328, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
+[Child 10360, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 10360, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+
+> resource://devtools/server/actors/reflow.js:312:7\nnotify@resource://gre/modules/Timer.jsm:44:7\n"
 [Exception... "Component is not available"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/inspector/node.js :: get displayType :: line 232"  data: no]: get displayType@resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/inspector/node.js:232:5
 _onReflows@resource://devtools/shared/base-loader.js -> resource://devtools/server/actors/inspector/walker.js:314:11
 emit@resource://devtools/shared/base-loader.js -> resource://devtools/shared/event-emitter.js:178:37
@@ -339,10 +346,23 @@ console.error: "Got a removal of an actor we didn't know about: server1.conn0.ch
 console.error: "Got a removal of an actor we didn't know about: server1.conn0.child1/domnode222"
 console.error: "Got a removal of an actor we didn't know about: server1.conn0.child1/domnode279"
 console.error: "Got a removal of an actor we didn't know about: server1.conn0.child1/domnode267"
-1526570832583	geckodriver	INFO	geckodriver 0.20.1
-1526570832592	geckodriver	INFO	Listening on 127.0.0.1:62315
-1526570833125	mozrunner::runner	INFO	Running command: "D:\\Program Files (x86)\\firefox.exe" "-marionette" "-profile" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rust_mozprofile.NKLhkW1WP3c2"
-1526570835878	Marionette	INFO	Listening on port 62320
-1526570836254	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://baijiahao.baidu.com/builder/rc/content?app_id=1600282401631826, line 2: SyntaxError: 08 is not a legal ECMA-262 octal constant
+JavaScript warning: https://baijiahao.baidu.com/builder/preview/s?id=1593091808056967486, line 267: SyntaxError: 08 is not a legal ECMA-262 octal constant
 Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
-JavaScript warning: https://bjhcdn.bdstatic.com/fe-react/static/media/jquery-1.10.2.min.ec6ce613.js, line 2: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+[Parent 3668, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 4672, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 3668, Gecko_IOThread] WARNIUnable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
+[Child 11144, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 11144, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 1032, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
+[Parent 8948, Gecko_IOThread] WARNING: file z:/build/build/src/ipc/chromium/src/base/process_util_win.cc, line 188
+[Parent 8948, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
+[Child 10236, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 10236, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Unable to read VR Path Registry from C:\Users\Administrator\AppData\Local\openvr\openvrpaths.vrpath
+[GPU 9408, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+

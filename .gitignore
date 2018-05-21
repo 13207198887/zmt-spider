@@ -14,3 +14,4 @@ vedio/
 *.yml
 *.pyc
 utils/articles.db
+*.mp4
