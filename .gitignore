@@ -2,7 +2,7 @@
 node_modules/
 cover/
 vedio/
-
+__pycache__
 .idea
 *.suo
 *.ntvs*
