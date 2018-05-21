@@ -3,7 +3,6 @@ node_modules/
 cover/
 vedio/
 
-# Editor directories and files
 .idea
 *.suo
 *.ntvs*
