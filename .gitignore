@@ -2,7 +2,6 @@
 node_modules/
 cover/
 vedio/
-articles.db
 
 # Editor directories and files
 .idea
@@ -14,3 +13,4 @@ articles.db
 *.bat
 *.yml
 *.pyc
+utils/articles.db
